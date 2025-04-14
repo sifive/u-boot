@@ -21,6 +21,7 @@ struct ofnode_phandle_args;
  * @round_rate: Adjust a rate to the exact rate a clock can provide.
  * @get_rate: Get current clock rate.
  * @set_rate: Set current clock rate.
+ * @get_parent: Get current clock parent
  * @set_parent: Set current clock parent
  * @enable: Enable a clock.
  * @disable: Disable a clock.
@@ -35,6 +36,7 @@ struct clk_ops {
 	ulong (*round_rate)(struct clk *clk, ulong rate);
 	ulong (*get_rate)(struct clk *clk);
 	ulong (*set_rate)(struct clk *clk, ulong rate);
+	struct clk *(*get_parent)(struct clk *clk);
 	int (*set_parent)(struct clk *clk, struct clk *parent);
 	int (*enable)(struct clk *clk);
 	int (*disable)(struct clk *clk);
