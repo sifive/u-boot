@@ -63,6 +63,12 @@ config RESET_BCM6345
 	help
 	  Support reset controller on BCM6345.
 
+config RESET_ESWIN
+	bool "Reset controller driver for ESWIN SoCs"
+	depends on DM_RESET
+	help
+	  This enables reset controller support for ESWIN SoCs.
+
 config RESET_UNIPHIER
 	bool "Reset controller driver for UniPhier SoCs"
 	depends on ARCH_UNIPHIER
