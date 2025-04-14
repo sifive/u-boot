@@ -35,6 +35,7 @@ obj-$(CONFIG_CLK_AT91) += at91/
 obj-$(CONFIG_CLK_BCM6345) += clk_bcm6345.o
 obj-$(CONFIG_CLK_BOSTON) += clk_boston.o
 obj-$(CONFIG_CLK_CDCE9XX) += clk-cdce9xx.o
+obj-$(CONFIG_CLK_ESWIN) += eswin/
 obj-$(CONFIG_CLK_EXYNOS) += exynos/
 obj-$(CONFIG_CLK_HSDK) += clk-hsdk-cgu.o
 obj-$(CONFIG_CLK_K210) += clk_k210.o

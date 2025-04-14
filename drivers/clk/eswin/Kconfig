@@ -1,0 +1,5 @@
+config CLK_ESWIN
+	bool "Clock support for ESWIN SoCs"
+	depends on CLK
+	help
+	  Enable clock driver support for ESWIN platforms.
