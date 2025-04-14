@@ -11,6 +11,7 @@
 #include <dm/device-internal.h>
 #include <dm/device_compat.h>
 #include <dm/devres.h>
+#include <dm/pinctrl.h>
 #include <dm/read.h>
 #include <errno.h>
 #include <reset.h>
@@ -98,6 +99,8 @@ static int dwapb_gpio_get_value(struct udevice *dev, unsigned pin)
 }
 
 static const struct dm_gpio_ops gpio_dwapb_ops = {
+	.request		= pinctrl_gpio_request,
+	.rfree			= pinctrl_gpio_free,
 	.direction_input	= dwapb_gpio_direction_input,
 	.direction_output	= dwapb_gpio_direction_output,
 	.get_value		= dwapb_gpio_get_value,
