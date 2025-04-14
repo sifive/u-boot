@@ -676,7 +676,7 @@ static inline ulong clk_get_id(const struct clk *clk)
  */
 static inline bool clk_valid(struct clk *clk)
 {
-	return clk && !!clk->dev;
+	return clk && !IS_ERR(clk) && !!clk->dev;
 }
 
 #endif
