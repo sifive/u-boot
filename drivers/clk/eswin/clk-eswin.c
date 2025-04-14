@@ -260,6 +260,63 @@ static int eswin_clk_disable(struct clk *clk)
 	return eswin_clk_set_gate(clk, false);
 }
 
+#if IS_ENABLED(CONFIG_CMD_CLK)
+static void eswin_clk_dump(struct udevice *dev)
+{
+	const struct eswin_clk_plat *plat = dev_get_plat(dev);
+	const struct eswin_clk_desc *desc = plat->desc;
+	struct clk clk, *parent;
+
+	printf(" ID            NAME                      PARENT              RATE    SEL DIV EN\n");
+	printf("---+--------------------------+--------------------------+----------+---+---+--\n");
+
+	clk.dev = dev;
+	for (size_t id = 0; id < desc->num_clks; ++id) {
+		const struct eswin_clk_data *data = &desc->clks[id];
+		const char *parent_name;
+
+		if (!data->name)
+			continue;
+
+		clk.id = id;
+		parent = clk_get_parent(&clk);
+
+		if (IS_ERR(parent))
+			parent_name = "(none)";
+		else if (parent->dev->driver != dev->driver)
+			parent_name = parent->dev->name;
+		else {
+			const struct eswin_clk_plat *parent_plat;
+			const struct eswin_clk_data *parent_data;
+
+			parent_plat = dev_get_plat(parent->dev);
+			parent_data = eswin_clk_get_data(parent_plat, parent);
+			parent_name = parent_data->name;
+			if (!parent_name)
+				parent_name = "(null)";
+		}
+
+		printf("%3zd %26s %26s %10ld",
+		       id, data->name, parent_name, clk_get_rate(&clk));
+		if (data->sel_mask)
+			printf(" %3d", eswin_clk_get_field(plat->base + data->sel_reg,
+							   data->sel_mask));
+		else if (data->div_mask || data->en_mask)
+			puts("    ");
+		if (data->div_mask)
+			printf(" %3d", eswin_clk_get_field(plat->base + data->div_reg,
+							   data->div_mask));
+		else if (data->en_mask)
+			puts("    ");
+		if (data->en_mask)
+			printf(" %2d", eswin_clk_get_field(plat->base + data->en_reg,
+							   data->en_mask));
+		puts("\n");
+	}
+	puts("\n");
+}
+#endif
+
 static struct clk_ops eswin_clk_ops = {
 	.request	= eswin_clk_request,
 	.round_rate	= eswin_clk_round_rate,
@@ -269,6 +326,9 @@ static struct clk_ops eswin_clk_ops = {
 	.set_parent	= eswin_clk_set_parent,
 	.enable		= eswin_clk_enable,
 	.disable	= eswin_clk_disable,
+#if IS_ENABLED(CONFIG_CMD_CLK)
+	.dump		= eswin_clk_dump,
+#endif
 };
 
 static int eswin_clk_probe(struct udevice *dev)
