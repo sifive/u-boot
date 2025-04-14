@@ -368,7 +368,15 @@ static int eswin_clk_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
+extern const struct eswin_clk_desc eic7700_clk_desc;
+
 static const struct udevice_id eswin_clk_ids[] = {
+#if IS_ENABLED(CONFIG_CLK_ESWIN_EIC7700)
+	{
+		.compatible = "eswin,eic7700-clock",
+		.data = (ulong)&eic7700_clk_desc,
+	},
+#endif
 	{ }
 };
 

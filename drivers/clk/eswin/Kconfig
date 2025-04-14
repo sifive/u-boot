@@ -3,3 +3,12 @@ config CLK_ESWIN
 	depends on CLK
 	help
 	  Enable clock driver support for ESWIN platforms.
+
+if CLK_ESWIN
+
+config CLK_ESWIN_EIC7700
+	bool "Clock driver for ESWIN EIC7700"
+	help
+	  Enable clock driver for the ESWIN EIC7700 SoC.
+
+endif
