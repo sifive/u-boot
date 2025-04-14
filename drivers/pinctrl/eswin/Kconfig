@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config PINCTRL_EIC7700
+	bool "Support for ESWIN EIC7700 pinctrl"
+	select PINCTRL
+	select PINCTRL_FULL
+	select PINCTRL_GENERIC
+	select PINCONF
+	select PINMUX

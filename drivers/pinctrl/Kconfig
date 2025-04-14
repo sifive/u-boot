@@ -388,6 +388,7 @@ config PINCTRL_ZYNQMP
 endif
 
 source "drivers/pinctrl/broadcom/Kconfig"
+source "drivers/pinctrl/eswin/Kconfig"
 source "drivers/pinctrl/exynos/Kconfig"
 source "drivers/pinctrl/intel/Kconfig"
 source "drivers/pinctrl/mediatek/Kconfig"
