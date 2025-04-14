@@ -3,6 +3,7 @@
 #include <dm.h>
 #include <reset-uclass.h>
 #include <asm/io.h>
+#include <dt-bindings/reset/eswin,eic7700-reset.h>
 #include <linux/bitops.h>
 
 struct eswin_reset_data {
@@ -88,7 +89,21 @@ static const struct reset_ops eswin_reset_ops = {
 	.rst_status	= eswin_reset_status,
 };
 
+static const struct eswin_reset_data eic7700_resets[] = {
+	[EIC7700_RESET_HSP_ETH1_ARST]	= ESWIN_RESET(0x11c, 25),
+	[EIC7700_RESET_HSP_ETH0_ARST]	= ESWIN_RESET(0x11c, 26),
+};
+
+static const struct eswin_reset_desc eic7700_reset_desc = {
+	.resets			= eic7700_resets,
+	.num_resets		= ARRAY_SIZE(eic7700_resets),
+};
+
 static const struct udevice_id eswin_reset_ids[] = {
+	{
+		.compatible	= "eswin,eic7700-reset",
+		.data		= (ulong)&eic7700_reset_desc,
+	},
 	{ }
 };
 
