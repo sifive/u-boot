@@ -229,6 +229,15 @@ config DWC_ETH_QOS_ADI
 		The Synopsis Designware Ethernet QoS IP block with the specific
 		configuration used in the ADI ADSP-SC59X 64 bit SoCs
 
+config DWC_ETH_QOS_ESWIN
+	bool "Synopsys DWC Ethernet QOS device support for ESWIN"
+	depends on DWC_ETH_QOS
+	select REGMAP
+	select SYSCON
+	help
+	  The Synopsys Designware Ethernet QOS IP block with specific
+	  configuration used in ESWIN SoCs.
+
 config DWC_ETH_QOS_IMX
 	bool "Synopsys DWC Ethernet QOS device support for IMX"
 	depends on DWC_ETH_QOS && MACH_IMX

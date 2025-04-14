@@ -1594,6 +1594,12 @@ static const struct eqos_config __maybe_unused eqos_tegra186_config = {
 };
 
 static const struct udevice_id eqos_ids[] = {
+#if IS_ENABLED(CONFIG_DWC_ETH_QOS_ESWIN)
+	{
+		.compatible = "eswin,eic7700-qos-eth",
+		.data = (ulong)&eqos_eswin_config
+	},
+#endif
 #if IS_ENABLED(CONFIG_DWC_ETH_QOS_TEGRA186)
 	{
 		.compatible = "nvidia,tegra186-eqos",
