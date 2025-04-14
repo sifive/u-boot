@@ -275,6 +275,8 @@ struct eqos_priv {
 	u32 max_speed;
 	void *tx_descs;
 	void *rx_descs;
+	dma_addr_t tx_descs_handle;
+	dma_addr_t rx_descs_handle;
 	int tx_desc_idx, rx_desc_idx;
 	unsigned int desc_size;
 	unsigned int desc_per_cacheline;
