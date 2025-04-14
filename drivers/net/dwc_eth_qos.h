@@ -202,7 +202,6 @@ struct eqos_tegra186_regs {
 #define EQOS_DESCRIPTORS_TX	4
 #define EQOS_DESCRIPTORS_RX	4
 #define EQOS_DESCRIPTORS_NUM	(EQOS_DESCRIPTORS_TX + EQOS_DESCRIPTORS_RX)
-#define EQOS_BUFFER_ALIGN	ARCH_DMA_MINALIGN
 #define EQOS_MAX_PACKET_SIZE	ALIGN(1568, ARCH_DMA_MINALIGN)
 #define EQOS_RX_BUFFER_SIZE	(EQOS_DESCRIPTORS_RX * EQOS_MAX_PACKET_SIZE)
 
@@ -282,6 +281,8 @@ struct eqos_priv {
 	unsigned int desc_per_cacheline;
 	void *tx_dma_buf;
 	void *rx_dma_buf;
+	dma_addr_t tx_dma_handle;
+	dma_addr_t rx_dma_handle;
 	bool started;
 	bool reg_access_ok;
 	bool clk_ck_enabled;

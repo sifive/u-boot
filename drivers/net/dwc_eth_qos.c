@@ -1004,7 +1004,7 @@ static int eqos_start(struct udevice *dev)
 	for (i = 0; i < EQOS_DESCRIPTORS_RX; i++) {
 		struct eqos_desc *rx_desc = eqos_get_desc(eqos, i, true);
 
-		addr64 = (ulong)(eqos->rx_dma_buf + (i * EQOS_MAX_PACKET_SIZE));
+		addr64 = eqos->rx_dma_handle + (i * EQOS_MAX_PACKET_SIZE);
 		rx_desc->des0 = lower_32_bits(addr64);
 		rx_desc->des1 = upper_32_bits(addr64);
 		rx_desc->des3 = EQOS_DESC3_OWN | EQOS_DESC3_BUF1V;
@@ -1126,8 +1126,8 @@ static int eqos_send(struct udevice *dev, void *packet, int length)
 	eqos->tx_desc_idx++;
 	eqos->tx_desc_idx %= EQOS_DESCRIPTORS_TX;
 
-	tx_desc->des0 = lower_32_bits((ulong)eqos->tx_dma_buf);
-	tx_desc->des1 = upper_32_bits((ulong)eqos->tx_dma_buf);
+	tx_desc->des0 = lower_32_bits(eqos->tx_dma_handle);
+	tx_desc->des1 = upper_32_bits(eqos->tx_dma_handle);
 	tx_desc->des2 = length;
 	/*
 	 * Make sure that if HW sees the _OWN write below, it will see all the
@@ -1206,7 +1206,7 @@ static int eqos_free_pkt(struct udevice *dev, uchar *packet, int length)
 			mb();
 			eqos->config->ops->eqos_flush_desc(rx_desc);
 			eqos->config->ops->eqos_inval_buffer(packet, length);
-			addr64 = (ulong)(eqos->rx_dma_buf + (idx * EQOS_MAX_PACKET_SIZE));
+			addr64 = eqos->rx_dma_handle + (idx * EQOS_MAX_PACKET_SIZE);
 			rx_desc->des0 = lower_32_bits(addr64);
 			rx_desc->des1 = upper_32_bits(addr64);
 			rx_desc->des2 = 0;
@@ -1258,7 +1258,7 @@ static int eqos_probe_resources_core(struct udevice *dev)
 		goto err;
 	}
 
-	eqos->tx_dma_buf = memalign(EQOS_BUFFER_ALIGN, EQOS_MAX_PACKET_SIZE);
+	eqos->tx_dma_buf = dma_alloc_coherent(EQOS_MAX_PACKET_SIZE, &eqos->tx_dma_handle);
 	if (!eqos->tx_dma_buf) {
 		debug("%s: memalign(tx_dma_buf) failed\n", __func__);
 		ret = -ENOMEM;
@@ -1266,7 +1266,7 @@ static int eqos_probe_resources_core(struct udevice *dev)
 	}
 	debug("%s: tx_dma_buf=%p\n", __func__, eqos->tx_dma_buf);
 
-	eqos->rx_dma_buf = memalign(EQOS_BUFFER_ALIGN, EQOS_RX_BUFFER_SIZE);
+	eqos->rx_dma_buf = dma_alloc_coherent(EQOS_RX_BUFFER_SIZE, &eqos->rx_dma_handle);
 	if (!eqos->rx_dma_buf) {
 		debug("%s: memalign(rx_dma_buf) failed\n", __func__);
 		ret = -ENOMEM;
@@ -1281,7 +1281,7 @@ static int eqos_probe_resources_core(struct udevice *dev)
 	return 0;
 
 err_free_tx_dma_buf:
-	free(eqos->tx_dma_buf);
+	dma_free_coherent(eqos->tx_dma_buf, eqos->tx_dma_handle);
 err_free_descs:
 	eqos_free_descs(eqos);
 err:
@@ -1296,8 +1296,8 @@ static int eqos_remove_resources_core(struct udevice *dev)
 
 	debug("%s(dev=%p):\n", __func__, dev);
 
-	free(eqos->rx_dma_buf);
-	free(eqos->tx_dma_buf);
+	dma_free_coherent(eqos->rx_dma_buf, eqos->rx_dma_handle);
+	dma_free_coherent(eqos->tx_dma_buf, eqos->tx_dma_handle);
 	eqos_free_descs(eqos);
 
 	debug("%s: OK\n", __func__);
