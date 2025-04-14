@@ -502,7 +502,7 @@ struct clk *clk_get_parent(struct clk *clk)
 
 	debug("%s(clk=%p)\n", __func__, clk);
 	if (!clk_valid(clk))
-		return NULL;
+		return ERR_PTR(-ENODEV);
 
 	pdev = dev_get_parent(clk->dev);
 	if (!pdev)
