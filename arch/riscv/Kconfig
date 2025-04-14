@@ -17,6 +17,9 @@ config TARGET_ANDES_VOYAGER
 config TARGET_BANANAPI_F3
 	bool "Support BananaPi F3 Board"
 
+config TARGET_HIFIVE_PREMIER_P550
+	bool "Support HiFive Premier P550 Board"
+
 config TARGET_K230_CANMV
 	bool "Support K230 CanMV Board"
 
@@ -110,6 +113,7 @@ source "board/canaan/k230_canmv/Kconfig"
 source "board/emulation/qemu-riscv/Kconfig"
 source "board/microchip/mpfs_generic/Kconfig"
 source "board/openpiton/riscv64/Kconfig"
+source "board/sifive/hifive-premier-p550/Kconfig"
 source "board/sifive/unleashed/Kconfig"
 source "board/sifive/unmatched/Kconfig"
 source "board/sipeed/maix/Kconfig"

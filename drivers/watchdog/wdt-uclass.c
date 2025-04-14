@@ -76,7 +76,8 @@ static void init_watchdog_dev(struct udevice *dev)
 
 	priv = dev_get_uclass_priv(dev);
 
-	if (IS_ENABLED(CONFIG_SYSRESET_WATCHDOG_AUTO)) {
+	if (CONFIG_IS_ENABLED(SYSRESET) &&
+	    IS_ENABLED(CONFIG_SYSRESET_WATCHDOG_AUTO)) {
 		ret = sysreset_register_wdt(dev);
 		if (ret)
 			printf("WDT:   Failed to register %s for sysreset\n",

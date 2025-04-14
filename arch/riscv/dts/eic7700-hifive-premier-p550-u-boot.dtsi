@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+
+/ {
+	memory@80000000 {
+		reg = <0x0 0x80000000 0x4 0x00000000>;
+		device_type = "memory";
+	};
+};

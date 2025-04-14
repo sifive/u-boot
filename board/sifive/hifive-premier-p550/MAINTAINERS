@@ -1,0 +1,5 @@
+SiFive HiFive Premier P550 Board
+M:	Samuel Holland <samuel.holland@sifive.com>
+S:	Maintained
+F:	board/sifive/hifive-premier-p550/
+F:	configs/hifive-premier-p550_defconfig

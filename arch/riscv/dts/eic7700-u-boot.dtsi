@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+
+#include "binman.dtsi"
+
+/ {
+	cpus {
+		bootph-all;
+
+		cpu@0 {
+			bootph-all;
+		};
+
+		cpu@1 {
+			bootph-all;
+		};
+
+		cpu@2 {
+			bootph-all;
+		};
+
+		cpu@3 {
+			bootph-all;
+		};
+	};
+};
+
+&clint {
+	bootph-all;
+};
+
+&uart0 {
+	bootph-all;
+	clock-frequency = <200000000>;
+};
+
+&uart2 {
+	clock-frequency = <200000000>;
+};

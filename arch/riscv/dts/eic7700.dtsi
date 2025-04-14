@@ -1,0 +1,511 @@
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+
+#include <dt-bindings/clock/eswin,eic7700-clock.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/reset/eswin,eic7700-reset.h>
+
+/ {
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	xtal24m: clk-xtal24m {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-output-names = "xtal24m";
+	};
+
+	cpus {
+		timebase-frequency = <1000000>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			compatible = "sifive,p550", "riscv";
+			device_type = "cpu";
+			reg = <0>;
+			d-cache-block-size = <64>;
+			d-cache-sets = <128>;
+			d-cache-size = <32768>;
+			d-tlb-sets = <1>;
+			d-tlb-size = <32>;
+			i-cache-block-size = <64>;
+			i-cache-sets = <128>;
+			i-cache-size = <32768>;
+			i-tlb-sets = <1>;
+			i-tlb-size = <32>;
+			mmu-type = "riscv,sv48";
+			next-level-cache = <&l2_cache0>;
+			tlb-split;
+			riscv,isa-base = "rv64i";
+			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "h", "sscofpmf",
+					       "zba", "zbb", "zicsr", "zifencei";
+
+			cpu0_intc: interrupt-controller {
+				compatible = "riscv,cpu-intc";
+				interrupt-controller;
+				#interrupt-cells = <1>;
+			};
+		};
+
+		cpu1: cpu@1 {
+			compatible = "sifive,p550", "riscv";
+			device_type = "cpu";
+			reg = <1>;
+			d-cache-block-size = <64>;
+			d-cache-sets = <128>;
+			d-cache-size = <32768>;
+			d-tlb-sets = <1>;
+			d-tlb-size = <32>;
+			i-cache-block-size = <64>;
+			i-cache-sets = <128>;
+			i-cache-size = <32768>;
+			i-tlb-sets = <1>;
+			i-tlb-size = <32>;
+			mmu-type = "riscv,sv48";
+			next-level-cache = <&l2_cache1>;
+			tlb-split;
+			riscv,isa-base = "rv64i";
+			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "h", "sscofpmf",
+					       "zba", "zbb", "zicsr", "zifencei";
+
+			cpu1_intc: interrupt-controller {
+				compatible = "riscv,cpu-intc";
+				interrupt-controller;
+				#interrupt-cells = <1>;
+			};
+		};
+
+		cpu2: cpu@2 {
+			compatible = "sifive,p550", "riscv";
+			device_type = "cpu";
+			reg = <2>;
+			d-cache-block-size = <64>;
+			d-cache-sets = <128>;
+			d-cache-size = <32768>;
+			d-tlb-sets = <1>;
+			d-tlb-size = <32>;
+			i-cache-block-size = <64>;
+			i-cache-sets = <128>;
+			i-cache-size = <32768>;
+			i-tlb-sets = <1>;
+			i-tlb-size = <32>;
+			mmu-type = "riscv,sv48";
+			next-level-cache = <&l2_cache2>;
+			tlb-split;
+			riscv,isa-base = "rv64i";
+			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "h", "sscofpmf",
+					       "zba", "zbb", "zicsr", "zifencei";
+
+			cpu2_intc: interrupt-controller {
+				compatible = "riscv,cpu-intc";
+				interrupt-controller;
+				#interrupt-cells = <1>;
+			};
+		};
+
+		cpu3: cpu@3 {
+			compatible = "sifive,p550", "riscv";
+			device_type = "cpu";
+			reg = <3>;
+			d-cache-block-size = <64>;
+			d-cache-sets = <128>;
+			d-cache-size = <32768>;
+			d-tlb-sets = <1>;
+			d-tlb-size = <32>;
+			i-cache-block-size = <64>;
+			i-cache-sets = <128>;
+			i-cache-size = <32768>;
+			i-tlb-sets = <1>;
+			i-tlb-size = <32>;
+			mmu-type = "riscv,sv48";
+			next-level-cache = <&l2_cache3>;
+			tlb-split;
+			riscv,isa-base = "rv64i";
+			riscv,isa-extensions = "i", "m", "a", "f", "d", "c", "h", "sscofpmf",
+					       "zba", "zbb", "zicsr", "zifencei";
+
+			cpu3_intc: interrupt-controller {
+				compatible = "riscv,cpu-intc";
+				interrupt-controller;
+				#interrupt-cells = <1>;
+			};
+		};
+	};
+
+	pmu {
+		compatible = "riscv,pmu";
+		riscv,event-to-mhpmcounters =
+				<0x00001 0x00001 0x00000001>,
+				<0x00002 0x00002 0x00000004>,
+				<0x00004 0x00006 0x00000078>,
+				<0x10009 0x10009 0x00000078>,
+				<0x10019 0x10019 0x00000078>,
+				<0x10021 0x10021 0x00000078>;
+		riscv,event-to-mhpmevent =
+				<0x00004 0x00000000 0x00000202>,
+				<0x00005 0x00000000 0x00004000>,
+				<0x00006 0x00000000 0x00002001>,
+				<0x10009 0x00000000 0x00000102>,
+				<0x10019 0x00000000 0x00001002>,
+				<0x10021 0x00000000 0x00000802>;
+		riscv,raw-event-to-mhpmcounters =
+				<0x00000000 0x00000000 0xffffffff 0xfc0000ff 0x00000078>,
+				<0x00000000 0x00000001 0xffffffff 0xfffe07ff 0x00000078>,
+				<0x00000000 0x00000002 0xffffffff 0xfffe00ff 0x00000078>,
+				<0x00000000 0x00000003 0xfffffffc 0x000000ff 0x00000078>,
+				<0x00000000 0x00000004 0xffffffc0 0x000000ff 0x00000078>,
+				<0x00000000 0x00000005 0xffffffff 0xfffffdff 0x00000078>,
+				<0x00000000 0x00000006 0xfffffe00 0x110204ff 0x00000078>,
+				<0x00000000 0x00000007 0xffffffff 0xf00000ff 0x00000078>,
+				<0x00000000 0x00000008 0xfffffe04 0x000000ff 0x00000078>,
+				<0x00000000 0x00000009 0xffffffff 0xffffc0ff 0x00000078>,
+				<0x00000000 0x0000000a 0xffffffff 0xf00000ff 0x00000078>,
+				<0x00000000 0x0000000b 0xffffffff 0xfffffcff 0x00000078>,
+				<0x00000000 0x0000000c 0xfffffff0 0x000000ff 0x00000078>,
+				<0x00000000 0x0000000d 0xffffffff 0x800000ff 0x00000078>,
+				<0x00000000 0x0000000e 0xffffffff 0xf80000ff 0x00000078>,
+				<0x00000000 0x0000000f 0xfffffffc 0x000000ff 0x00000078>;
+	};
+
+	soc {
+		compatible = "simple-bus";
+		ranges;
+		interrupt-parent = <&plic>;
+		#address-cells = <2>;
+		#size-cells = <2>;
+
+		trace-funnel@18000 {
+			compatible = "eswin,eic7700-trace", "sifive,trace0";
+			reg = <0x0 0x00018000 0x0 0x1000>;
+		};
+
+		trace-encoder@100000 {
+			compatible = "eswin,eic7700-trace", "sifive,trace0";
+			reg = <0x0 0x00100000 0x0 0x1000>;
+		};
+
+		trace-encoder@101000 {
+			compatible = "eswin,eic7700-trace", "sifive,trace0";
+			reg = <0x0 0x00101000 0x0 0x1000>;
+		};
+
+		trace-encoder@102000 {
+			compatible = "eswin,eic7700-trace", "sifive,trace0";
+			reg = <0x0 0x00102000 0x0 0x1000>;
+		};
+
+		trace-encoder@103000 {
+			compatible = "eswin,eic7700-trace", "sifive,trace0";
+			reg = <0x0 0x00103000 0x0 0x1000>;
+		};
+
+		l2_cache0: cache@104000 {
+			compatible = "eswin,eic7700-pl2", "sifive,pl2cache0";
+			reg = <0x0 0x00104000 0x0 0x1000>;
+			cache-block-size = <64>;
+			cache-level = <2>;
+			cache-sets = <512>;
+			cache-size = <262144>;
+			cache-unified;
+			next-level-cache = <&l3_cache>;
+			sifive,perfmon-counters = <6>;
+		};
+
+		l2_cache1: cache@108000 {
+			compatible = "eswin,eic7700-pl2", "sifive,pl2cache0";
+			reg = <0x0 0x00108000 0x0 0x4000>;
+			cache-block-size = <64>;
+			cache-level = <2>;
+			cache-sets = <512>;
+			cache-size = <262144>;
+			cache-unified;
+			next-level-cache = <&l3_cache>;
+			sifive,perfmon-counters = <6>;
+		};
+
+		l2_cache2: cache@10c000 {
+			compatible = "eswin,eic7700-pl2", "sifive,pl2cache0";
+			reg = <0x0 0x0010c000 0x0 0x4000>;
+			cache-block-size = <64>;
+			cache-level = <2>;
+			cache-sets = <512>;
+			cache-size = <262144>;
+			cache-unified;
+			next-level-cache = <&l3_cache>;
+			sifive,perfmon-counters = <6>;
+		};
+
+		l2_cache3: cache@110000 {
+			compatible = "eswin,eic7700-pl2", "sifive,pl2cache0";
+			reg = <0x0 0x00110000 0x0 0x4000>;
+			cache-block-size = <64>;
+			cache-level = <2>;
+			cache-sets = <512>;
+			cache-size = <262144>;
+			cache-unified;
+			next-level-cache = <&l3_cache>;
+			sifive,perfmon-counters = <6>;
+		};
+
+		bus-blocker@200000 {
+			compatible = "eswin,eic7700-d2d-bus-blocker", "sifive,basic-bus-blocker1";
+			reg = <0x0 0x200000 0x0 0x1000>;
+		};
+
+		bus-blocker@202000 {
+			compatible = "eswin,eic7700-d2d-bus-blocker", "sifive,basic-bus-blocker1";
+			reg = <0x0 0x202000 0x0 0x1000>;
+		};
+
+		bus-blocker@204000 {
+			compatible = "eswin,eic7700-d2d-bus-blocker", "sifive,basic-bus-blocker1";
+			reg = <0x0 0x204000 0x0 0x1000>;
+		};
+
+		bus-error-unit@1700000 {
+			compatible = "eswin,eic7700-beu", "sifive,buserror0";
+			reg = <0x0 0x01700000 0x0 0x1000>;
+			interupts = <517>;
+		};
+
+		bus-error-unit@1701000 {
+			compatible = "eswin,eic7700-beu", "sifive,buserror0";
+			reg = <0x0 0x01701000 0x0 0x1000>;
+			interupts = <518>;
+		};
+
+		bus-error-unit@1702000 {
+			compatible = "eswin,eic7700-beu", "sifive,buserror0";
+			reg = <0x0 0x01702000 0x0 0x1000>;
+			interupts = <519>;
+		};
+
+		bus-error-unit@1703000 {
+			compatible = "eswin,eic7700-beu", "sifive,buserror0";
+			reg = <0x0 0x01703000 0x0 0x1000>;
+			interupts = <520>;
+		};
+
+		clint: timer@2000000 {
+			compatible = "eswin,eic7700-clint", "sifive,clint0";
+			reg = <0x0 0x02000000 0x0 0x10000>;
+			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>,
+					      <&cpu1_intc 3>, <&cpu1_intc 7>,
+					      <&cpu2_intc 3>, <&cpu2_intc 7>,
+					      <&cpu3_intc 3>, <&cpu3_intc 7>;
+		};
+
+		l3_cache: cache-controller@2010000 {
+			compatible = "eswin,eic7700-l3-cache", "sifive,ccache0", "cache";
+			reg = <0x0 0x02010000 0x0 0x4000>;
+			interrupts = <1>, <3>, <4>, <2>;
+			cache-block-size = <64>;
+			cache-level = <3>;
+			cache-sets = <4096>;
+			cache-size = <4194304>;
+			cache-unified;
+			sifive,perfmon-counters = <6>;
+		};
+
+		plic: interrupt-controller@c000000 {
+			compatible = "eswin,eic7700-plic", "sifive,plic-1.0.0";
+			reg = <0x0 0x0c000000 0x0 0x4000000>;
+			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>,
+					      <&cpu1_intc 11>, <&cpu1_intc 9>,
+					      <&cpu2_intc 11>, <&cpu2_intc 9>,
+					      <&cpu3_intc 11>, <&cpu3_intc 9>;
+			interrupt-controller;
+			#interrupt-cells = <1>;
+			riscv,ndev = <520>;
+		};
+
+		burst-bundler@10010000 {
+			compatible = "eswin,eic7700-burst-bundler", "sifive,burst-bundler0";
+			reg = <0x0 0x10010000 0x0 0x1000>;
+		};
+
+		gmac0: ethernet@50400000 {
+			compatible = "eswin,eic7700-qos-eth", "snps,dwmac-5.20";
+			reg = <0x0 0x50400000 0x0 0x10000>;
+			interrupts = <61>;
+			interrupt-names = "macirq";
+			clocks = <&clk EIC7700_CLK_GATE_HSP_ACLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_CFG_CLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_ETH0_CORE_CLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_RMII_REF_0>;
+			clock-names = "axi", "cfg", "stmmaceth", "tx";
+			resets = <&reset EIC7700_RESET_HSP_ETH0_ARST>;
+			eswin,hsp-sp-csr = <&hsp_sp_csr 0x100 0x108 0x114 0x118 0x11c>;
+			snps,axi-config = <&gmac0_axi_config>;
+			status = "disabled";
+
+			gmac0_mdio: mdio {
+				compatible = "snps,dwmac-mdio";
+				#address-cells = <1>;
+				#size-cells = <0>;
+			};
+
+			gmac0_axi_config: stmmac-axi-config {
+				snps,lpi_en = <0>;
+				snps,wr_osr_lmt = <2>;
+				snps,rd_osr_lmt = <2>;
+				snps,blen = <0 0 0 0 16 8 4>;
+			};
+		};
+
+		gmac1: ethernet@50410000 {
+			compatible = "eswin,eic7700-qos-eth", "snps,dwmac-5.20";
+			reg = <0x0 0x50410000 0x0 0x10000>;
+			interrupts = <70>;
+			interrupt-names = "macirq";
+			clocks = <&clk EIC7700_CLK_GATE_HSP_ACLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_CFG_CLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_ETH0_CORE_CLK>,
+				 <&clk EIC7700_CLK_GATE_HSP_RMII_REF_1>;
+			clock-names = "axi", "cfg", "stmmaceth", "tx";
+			resets = <&reset EIC7700_RESET_HSP_ETH1_ARST>;
+			eswin,hsp-sp-csr = <&hsp_sp_csr 0x200 0x208 0x214 0x218 0x21c>;
+			snps,axi-config = <&gmac1_axi_config>;
+			status = "disabled";
+
+			gmac1_mdio: mdio {
+				compatible = "snps,dwmac-mdio";
+				#address-cells = <1>;
+				#size-cells = <0>;
+			};
+
+			gmac1_axi_config: stmmac-axi-config {
+				snps,lpi_en = <0>;
+				snps,wr_osr_lmt = <2>;
+				snps,rd_osr_lmt = <2>;
+				snps,blen = <0 0 0 0 16 8 4>;
+			};
+		};
+
+		hsp_sp_csr: syscon@50440000 {
+			compatible = "eswin,eic7700-hsp-sp-csr", "syscon";
+			reg = <0x0 0x50440000 0x0 0x2000>;
+		};
+
+		uart0: serial@50900000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x0 0x50900000 0x0 0x10000>;
+			interrupts = <100>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "disabled";
+		};
+
+		uart1: serial@50910000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x0 0x50910000 0x0 0x10000>;
+			interrupts = <101>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "disabled";
+		};
+
+		uart2: serial@50920000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x0 0x50920000 0x0 0x10000>;
+			interrupts = <102>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "disabled";
+		};
+
+		uart3: serial@50930000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x0 0x50930000 0x0 0x10000>;
+			interrupts = <103>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "disabled";
+		};
+
+		uart4: serial@50940000 {
+			compatible = "snps,dw-apb-uart";
+			reg = <0x0 0x50940000 0x0 0x10000>;
+			interrupts = <104>;
+			reg-shift = <2>;
+			reg-io-width = <4>;
+			status = "disabled";
+		};
+
+		gpio@51600000 {
+			compatible = "snps,dw-apb-gpio";
+			reg = <0x0 0x51600000 0x0 0x80>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			porta: gpio-port@0 {
+				compatible = "snps,dw-apb-gpio-port";
+				reg = <0>;
+				interrupt-controller;
+				#interrupt-cells = <2>;
+				interrupts = <303>, <304>, <305>, <306>, <307>, <308>, <309>,
+					     <310>, <311>, <312>, <313>, <314>, <315>, <316>,
+					     <317>, <318>, <319>, <320>, <321>, <322>, <323>,
+					     <324>, <325>, <326>, <327>, <328>, <329>, <330>,
+					     <331>, <332>, <333>, <334>;
+				gpio-controller;
+				ngpios = <32>;
+				#gpio-cells = <2>;
+				gpio-ranges = <&pinctrl  0 12  1>,
+					      <&pinctrl  1 14 12>,
+					      <&pinctrl 13  1  4>,
+					      <&pinctrl 17 32  1>,
+					      <&pinctrl 18 40  5>,
+					      <&pinctrl 23 51  7>,
+					      <&pinctrl 30 68  2>;
+			};
+
+			portb: gpio-port@1 {
+				compatible = "snps,dw-apb-gpio-port";
+				reg = <1>;
+				gpio-controller;
+				ngpios = <32>;
+				#gpio-cells = <2>;
+				gpio-ranges = <&pinctrl  0 70  3>,
+					      <&pinctrl  3 79  7>,
+					      <&pinctrl 10 89 22>;
+			};
+
+			portc: gpio-port@2 {
+				compatible = "snps,dw-apb-gpio-port";
+				reg = <2>;
+				gpio-controller;
+				ngpios = <32>;
+				#gpio-cells = <2>;
+				gpio-ranges = <&pinctrl 0 111 32>;
+			};
+
+			portd: gpio-port@3 {
+				compatible = "snps,dw-apb-gpio-port";
+				reg = <3>;
+				gpio-controller;
+				ngpios = <16>;
+				#gpio-cells = <2>;
+				gpio-ranges = <&pinctrl 0 143 16>;
+			};
+		};
+
+		pinctrl: pinctrl@51600080 {
+			compatible = "eswin,eic7700-pinctrl";
+			reg = <0x0 0x51600080 0x0 0x1fff80>;
+		};
+
+		clk: clock-controller@51828000 {
+			compatible = "eswin,eic7700-clock";
+			reg = <0x0 0x51828000 0x0 0x300>;
+			clocks = <&xtal24m>;
+			#clock-cells = <1>;
+		};
+
+		reset: reset-controller@51828300 {
+			compatible = "eswin,eic7700-reset";
+			reg = <0x0 0x51828300 0x0 0x200>;
+			#reset-cells = <1>;
+		};
+	};
+};

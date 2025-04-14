@@ -81,27 +81,20 @@
 					};
 				};
 
-#if !defined(CONFIG_OF_BOARD) || defined(CONFIG_MULTI_DTB_FIT)
 				@fdt-SEQ {
 					fit,operation = "gen-fdt-nodes";
 					description = "NAME";
 					type = "flat_dt";
 					compression = "none";
 				};
-#endif
 			};
 
 			configurations {
-
 #ifndef CONFIG_MULTI_DTB_FIT
 				default = "conf-1";
 #endif
 
-#if !defined(CONFIG_OF_BOARD) || defined(CONFIG_MULTI_DTB_FIT)
 				@conf-SEQ {
-#else
-				conf-1 {
-#endif
 					description = "NAME";
 					firmware = "opensbi";
 #ifdef CONFIG_OPTEE
@@ -117,10 +110,7 @@
 					loadables = "uboot";
 #endif
 #endif /* CONFIG_OPTEE */
-
-#if !defined(CONFIG_OF_BOARD) || defined(CONFIG_MULTI_DTB_FIT)
 					fdt = "fdt-SEQ";
-#endif
 				};
 			};
 		};

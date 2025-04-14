@@ -170,9 +170,7 @@ end_stream:
 	printf("Loaded %lu bytes\n", size);
 
 #ifdef CONFIG_SPL_GZIP
-	if (!(IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
-	      image_get_magic((struct legacy_img_hdr *)buf) == FDT_MAGIC) &&
-	    (ih->ih_comp == IH_COMP_GZIP)) {
+	if (ih && ih->ih_comp == IH_COMP_GZIP) {
 		if (gunzip((void *)(spl_image->load_addr + sizeof(*ih)),
 			   CONFIG_SYS_BOOTM_LEN,
 			   (void *)(CONFIG_SYS_LOAD_ADDR + sizeof(*ih)),
