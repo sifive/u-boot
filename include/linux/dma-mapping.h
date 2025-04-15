@@ -38,7 +38,7 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 	else
 		flush_dcache_range(addr, addr + len);
 
-	return addr;
+	return virt_to_phys(vaddr);
 }
 
 /**
@@ -55,10 +55,12 @@ static inline dma_addr_t dma_map_single(void *vaddr, size_t len,
 static inline void dma_unmap_single(dma_addr_t addr, size_t len,
 				    enum dma_data_direction dir)
 {
+	unsigned long vaddr = (unsigned long)phys_to_virt(addr);
+
 	len = ALIGN(len, ARCH_DMA_MINALIGN);
 
 	if (dir != DMA_TO_DEVICE)
-		invalidate_dcache_range(addr, addr + len);
+		invalidate_dcache_range(vaddr, vaddr + len);
 }
 
 #endif
