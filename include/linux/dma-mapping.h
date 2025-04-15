@@ -3,12 +3,42 @@
 #define _LINUX_DMA_MAPPING_H
 
 #include <asm/cache.h>
+#include <asm/io.h>
 #include <linux/dma-direction.h>
 #include <linux/types.h>
-#include <asm/dma-mapping.h>
 #include <cpu_func.h>
+#include <memalign.h>
 
 #define dma_mapping_error(x, y)	0
+
+/*
+ * dma_alloc_coherent() returns a cache-line aligned allocation which is
+ * mapped to an uncached I/O region.
+ */
+static inline void *dma_alloc_coherent(size_t len, dma_addr_t *handle)
+{
+	void *vaddr = malloc_cache_aligned(len);
+	phys_addr_t paddr;
+
+	if (!vaddr)
+		return NULL;
+
+	invalidate_dcache_range((unsigned long)vaddr,
+				(unsigned long)vaddr + len);
+
+	paddr = virt_to_phys(vaddr);
+	*handle = paddr;
+
+	return map_physmem(paddr, len, MAP_NOCACHE);
+}
+
+static inline void dma_free_coherent(void *addr, dma_addr_t handle)
+{
+	void *vaddr = phys_to_virt(handle);
+
+	unmap_physmem(addr, MAP_NOCACHE);
+	free(vaddr);
+}
 
 /**
  * Map a buffer to make it available to the DMA device
