@@ -2309,7 +2309,7 @@ free_buf:
 	kfree(cadence->buf);
 
 free_buf_desc:
-	dma_free_coherent(cadence->cdma_desc);
+	dma_free_coherent(cadence->cdma_desc, cadence->dma_cdma_desc);
 
 	return ret;
 }

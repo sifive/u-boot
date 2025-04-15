@@ -148,7 +148,9 @@ struct meson_nfc_nand_chip {
 
 	u32 bch_mode;
 	u8 *data_buf;
+	dma_addr_t data_handle;
 	__le64 *info_buf;
+	dma_addr_t info_handle;
 	u32 nsels;
 	u8 sels[];
 };
@@ -496,14 +498,13 @@ static void meson_nfc_read_buf(struct mtd_info *mtd, u8 *buf, int size)
 	struct nand_chip *nand = mtd_to_nand(mtd);
 	struct meson_nfc *nfc = nand_get_controller_data(nand);
 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
+	dma_addr_t dma_handle;
 	u8 *dma_buf;
 	int ret;
 	u32 cmd;
 
 	if ((uintptr_t)buf % DMA_ADDR_ALIGN) {
-		dma_addr_t tmp_addr;
-
-		dma_buf = dma_alloc_coherent(size, &tmp_addr);
+		dma_buf = dma_alloc_coherent(size, &dma_handle);
 		if (!dma_buf)
 			return;
 	} else {
@@ -527,7 +528,7 @@ static void meson_nfc_read_buf(struct mtd_info *mtd, u8 *buf, int size)
 
 	if (buf != dma_buf) {
 		memcpy(buf, dma_buf, size);
-		dma_free_coherent(dma_buf);
+		dma_free_coherent(dma_buf, dma_handle);
 	}
 }
 
@@ -535,14 +536,13 @@ static void meson_nfc_write_buf(struct mtd_info *mtd, const u8 *buf, int size)
 {
 	struct nand_chip *nand = mtd_to_nand(mtd);
 	struct meson_nfc *nfc = nand_get_controller_data(nand);
+	dma_addr_t dma_handle;
 	u8 *dma_buf;
 	int ret;
 	u32 cmd;
 
 	if ((uintptr_t)buf % DMA_ADDR_ALIGN) {
-		dma_addr_t tmp_addr;
-
-		dma_buf = dma_alloc_coherent(size, &tmp_addr);
+		dma_buf = dma_alloc_coherent(size, &dma_handle);
 		if (!dma_buf)
 			return;
 
@@ -566,7 +566,7 @@ static void meson_nfc_write_buf(struct mtd_info *mtd, const u8 *buf, int size)
 	meson_nfc_dma_buffer_release(nand, size, 0, DMA_TO_DEVICE);
 
 	if (buf != dma_buf)
-		dma_free_coherent(dma_buf);
+		dma_free_coherent(dma_buf, dma_handle);
 }
 
 static int meson_nfc_write_page_sub(struct nand_chip *nand,
@@ -933,20 +933,19 @@ static int meson_chip_buffer_init(struct nand_chip *nand)
 	const struct mtd_info *mtd = nand_to_mtd(nand);
 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
 	u32 page_bytes, info_bytes, nsectors;
-	dma_addr_t tmp_addr;
 
 	nsectors = mtd->writesize / nand->ecc.size;
 
 	page_bytes =  mtd->writesize + mtd->oobsize;
 	info_bytes = nsectors * PER_INFO_BYTE;
 
-	meson_chip->data_buf = dma_alloc_coherent(page_bytes, &tmp_addr);
+	meson_chip->data_buf = dma_alloc_coherent(page_bytes, &meson_chip->data_handle);
 	if (!meson_chip->data_buf)
 		return -ENOMEM;
 
-	meson_chip->info_buf = dma_alloc_coherent(info_bytes, &tmp_addr);
+	meson_chip->info_buf = dma_alloc_coherent(info_bytes, &meson_chip->info_handle);
 	if (!meson_chip->info_buf) {
-		dma_free_coherent(meson_chip->data_buf);
+		dma_free_coherent(meson_chip->data_buf, meson_chip->data_handle);
 		return -ENOMEM;
 	}
 
@@ -1176,8 +1175,8 @@ static int meson_nfc_nand_chip_init(struct udevice *dev, struct meson_nfc *nfc,
 	return 0;
 
 err_chip_buf_free:
-	dma_free_coherent(meson_chip->info_buf);
-	dma_free_coherent(meson_chip->data_buf);
+	dma_free_coherent(meson_chip->info_buf, meson_chip->info_handle);
+	dma_free_coherent(meson_chip->data_buf, meson_chip->data_handle);
 
 err_chip_free:
 	free(meson_chip);

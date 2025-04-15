@@ -87,7 +87,7 @@ static int turris_rwtm_rng_remove(struct udevice *dev)
 {
 	struct turris_rwtm_rng_priv *priv = dev_get_priv(dev);
 
-	dma_free_coherent(priv->buffer);
+	dma_free_coherent(priv->buffer, priv->buffer_handle);
 
 	return 0;
 }

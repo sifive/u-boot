@@ -219,7 +219,7 @@ int cdns3_allocate_trb_pool(struct cdns3_endpoint *priv_ep)
 static void cdns3_free_trb_pool(struct cdns3_endpoint *priv_ep)
 {
 	if (priv_ep->trb_pool) {
-		dma_free_coherent(priv_ep->trb_pool);
+		dma_free_coherent(priv_ep->trb_pool, priv_ep->trb_pool_dma);
 		priv_ep->trb_pool = NULL;
 	}
 }
@@ -714,7 +714,7 @@ static void cdns3_free_aligned_request_buf(struct cdns3_device *priv_dev)
 			 * interrupts.
 			 */
 			spin_unlock_irqrestore(&priv_dev->lock, flags);
-			dma_free_coherent(buf->buf);
+			dma_free_coherent(buf->buf, buf->dma);
 			kfree(buf);
 			spin_lock_irqsave(&priv_dev->lock, flags);
 		}
@@ -2566,13 +2566,13 @@ void cdns3_gadget_exit(struct cdns3 *cdns)
 		struct cdns3_aligned_buf *buf;
 
 		buf = cdns3_next_align_buf(&priv_dev->aligned_buf_list);
-		dma_free_coherent(buf->buf);
+		dma_free_coherent(buf->buf, buf->dma);
 
 		list_del(&buf->list);
 		kfree(buf);
 	}
 
-	dma_free_coherent(priv_dev->setup_buf);
+	dma_free_coherent(priv_dev->setup_buf, priv_dev->setup_dma);
 
 	kfree(priv_dev->zlp_buf);
 	kfree(priv_dev);
@@ -2689,7 +2689,7 @@ static int cdns3_gadget_start(struct cdns3 *cdns)
 err4:
 	kfree(priv_dev->zlp_buf);
 err3:
-	dma_free_coherent(priv_dev->setup_buf);
+	dma_free_coherent(priv_dev->setup_buf, priv_dev->setup_dma);
 err2:
 	cdns3_free_all_eps(priv_dev);
 err1:

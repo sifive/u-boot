@@ -28,7 +28,7 @@
 #define set_bit(bit, bitmap)	__set_bit(bit, bitmap)
 #define clear_bit(bit, bitmap)	__clear_bit(bit, bitmap)
 #define dma_free_coherent(dev, size, cpu_addr, dma_handle) \
-	dma_free_coherent(cpu_addr)
+	dma_free_coherent(cpu_addr, dma_handle)
 #define dma_zalloc_coherent(dev, size, dma_handle, flag) \
 ({ \
 	void	*ring_mem_virt; \

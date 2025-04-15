@@ -19,7 +19,7 @@ static inline void *dma_alloc_coherent(size_t len, dma_addr_t *handle)
 	return (void *)*handle;
 }
 
-static inline void dma_free_coherent(void *addr)
+static inline void dma_free_coherent(void *addr, dma_addr_t handle)
 {
 	free(addr);
 }

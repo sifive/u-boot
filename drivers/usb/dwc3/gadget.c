@@ -397,7 +397,7 @@ static int dwc3_alloc_trb_pool(struct dwc3_ep *dep)
 
 static void dwc3_free_trb_pool(struct dwc3_ep *dep)
 {
-	dma_free_coherent(dep->trb_pool);
+	dma_free_coherent(dep->trb_pool, dep->trb_pool_dma);
 
 	dep->trb_pool = NULL;
 	dep->trb_pool_dma = 0;
@@ -2712,16 +2712,16 @@ int dwc3_gadget_init(struct dwc3 *dwc)
 
 err4:
 	dwc3_gadget_free_endpoints(dwc);
-	dma_free_coherent(dwc->ep0_bounce);
+	dma_free_coherent(dwc->ep0_bounce, dwc->ep0_bounce_addr);
 
 err3:
-	dma_free_coherent(dwc->setup_buf);
+	dma_free_coherent(dwc->setup_buf, dwc->setup_buf_addr);
 
 err2:
-	dma_free_coherent(dwc->ep0_trb);
+	dma_free_coherent(dwc->ep0_trb, dwc->ep0_trb_addr);
 
 err1:
-	dma_free_coherent(dwc->ctrl_req);
+	dma_free_coherent(dwc->ctrl_req, dwc->ctrl_req_addr);
 
 err0:
 	return ret;
@@ -2735,13 +2735,13 @@ void dwc3_gadget_exit(struct dwc3 *dwc)
 
 	dwc3_gadget_free_endpoints(dwc);
 
-	dma_free_coherent(dwc->ep0_bounce);
+	dma_free_coherent(dwc->ep0_bounce, dwc->ep0_bounce_addr);
 
-	dma_free_coherent(dwc->setup_buf);
+	dma_free_coherent(dwc->setup_buf, dwc->setup_buf_addr);
 
-	dma_free_coherent(dwc->ep0_trb);
+	dma_free_coherent(dwc->ep0_trb, dwc->ep0_trb_addr);
 
-	dma_free_coherent(dwc->ctrl_req);
+	dma_free_coherent(dwc->ctrl_req, dwc->ctrl_req_addr);
 }
 
 /**
