@@ -9,7 +9,6 @@
 #include <malloc.h>
 #include <nand.h>
 #include <asm/cache.h>
-#include <asm/dma-mapping.h>
 #include <dm/device_compat.h>
 #include <dm/devres.h>
 #include <linux/bitfield.h>

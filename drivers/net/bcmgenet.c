@@ -25,6 +25,7 @@
 #include <fdt_support.h>
 #include <linux/bitops.h>
 #include <linux/delay.h>
+#include <linux/dma-mapping.h>
 #include <linux/err.h>
 #include <malloc.h>
 #include <miiphy.h>
@@ -33,7 +34,6 @@
 #include <dm/ofnode.h>
 #include <linux/iopoll.h>
 #include <linux/sizes.h>
-#include <asm/dma-mapping.h>
 #include <wait_bit.h>
 
 /* Register definitions derived from Linux source */

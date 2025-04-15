@@ -6,9 +6,9 @@
 #include <dm.h>
 #include <malloc.h>
 #include <rng.h>
-#include <asm/dma-mapping.h>
 #include <asm/types.h>
 #include <mach/mbox.h>
+#include <linux/dma-mapping.h>
 
 /* size of entropy buffer */
 #define RNG_BUFFER_SIZE	128U
