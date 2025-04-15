@@ -32,8 +32,7 @@
 #define dma_zalloc_coherent(dev, size, dma_handle, flag) \
 ({ \
 	void	*ring_mem_virt; \
-	ring_mem_virt = dma_alloc_coherent((size), \
-					   (unsigned long *)(dma_handle)); \
+	ring_mem_virt = dma_alloc_coherent((size), (dma_handle)); \
 	if (ring_mem_virt) \
 		memset(ring_mem_virt, 0, (size)); \
 	ring_mem_virt; \
@@ -591,8 +590,7 @@ static int k3_dmaring_ring_cfg(struct k3_nav_ring *ring, struct k3_nav_ring_cfg 
 	ring->ops = &k3_dmaring_fwd_ring_ops;
 
 	ring->ring_mem_virt =
-		dma_alloc_coherent(ring->size * (4 << ring->elm_size),
-				   (unsigned long *)&ring->ring_mem_dma);
+		dma_alloc_coherent(ring->size * (4 << ring->elm_size), &ring->ring_mem_dma);
 	if (!ring->ring_mem_virt) {
 		dev_err(ringacc->dev, "Failed to alloc ring mem\n");
 		ret = -ENOMEM;

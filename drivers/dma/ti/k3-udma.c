@@ -2210,7 +2210,7 @@ static int udma_request(struct dma *dma)
 	struct udma_dev *ud = dev_get_priv(dma->dev);
 	struct udma_chan_config *ucc;
 	struct udma_chan *uc;
-	unsigned long dummy;
+	dma_addr_t dummy;
 	int ret;
 
 	if (dma->id >= (ud->rchan_cnt + ud->tchan_cnt)) {

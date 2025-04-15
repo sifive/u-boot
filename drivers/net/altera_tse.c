@@ -576,6 +576,7 @@ static int altera_tse_probe(struct udevice *dev)
 	const char *list, *end;
 	const fdt32_t *cell;
 	void *base, *desc_mem = NULL;
+	dma_addr_t desc_handle;
 	unsigned long addr, size;
 	int parent, addrc, sizec;
 	int len, idx;
@@ -638,7 +639,7 @@ static int altera_tse_probe(struct udevice *dev)
 	if (priv->dma_type == ALT_SGDMA) {
 		len = sizeof(struct alt_sgdma_descriptor) * 4;
 		if (!desc_mem) {
-			desc_mem = dma_alloc_coherent(len, &addr);
+			desc_mem = dma_alloc_coherent(len, &desc_handle);
 			if (!desc_mem)
 				return -ENOMEM;
 		}

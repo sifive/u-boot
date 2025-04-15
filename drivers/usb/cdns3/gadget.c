@@ -197,9 +197,7 @@ int cdns3_allocate_trb_pool(struct cdns3_endpoint *priv_ep)
 	struct cdns3_trb *link_trb;
 
 	if (!priv_ep->trb_pool) {
-		priv_ep->trb_pool =
-		dma_alloc_coherent(ring_size,
-				   (unsigned long *)&priv_ep->trb_pool_dma);
+		priv_ep->trb_pool = dma_alloc_coherent(ring_size, &priv_ep->trb_pool_dma);
 		if (!priv_ep->trb_pool)
 			return -ENOMEM;
 	} else {
@@ -744,8 +742,7 @@ static int cdns3_prepare_aligned_request_buf(struct cdns3_request *priv_req)
 
 		buf->size = priv_req->request.length;
 
-		buf->buf = dma_alloc_coherent(buf->size,
-					      (unsigned long *)&buf->dma);
+		buf->buf = dma_alloc_coherent(buf->size, &buf->dma);
 		if (!buf->buf) {
 			kfree(buf);
 			return -ENOMEM;
@@ -2656,8 +2653,7 @@ static int cdns3_gadget_start(struct cdns3 *cdns)
 	}
 
 	/* allocate memory for setup packet buffer */
-	priv_dev->setup_buf =
-		dma_alloc_coherent(8, (unsigned long *)&priv_dev->setup_dma);
+	priv_dev->setup_buf = dma_alloc_coherent(8, &priv_dev->setup_dma);
 	if (!priv_dev->setup_buf) {
 		ret = -ENOMEM;
 		goto err2;

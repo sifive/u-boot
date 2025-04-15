@@ -2271,7 +2271,7 @@ static int cadence_nand_init(struct cadence_nand_info *cadence)
 	int ret;
 
 	cadence->cdma_desc = dma_alloc_coherent(sizeof(*cadence->cdma_desc),
-						(unsigned long *)&cadence->dma_cdma_desc);
+						&cadence->dma_cdma_desc);
 	if (!cadence->cdma_desc)
 		return -ENOMEM;
 

@@ -119,12 +119,12 @@ struct macb_device {
 	struct macb_dma_desc	*tx_ring;
 	size_t			rx_buffer_size;
 
-	unsigned long		rx_buffer_dma;
-	unsigned long		rx_ring_dma;
-	unsigned long		tx_ring_dma;
+	dma_addr_t		rx_buffer_dma;
+	dma_addr_t		rx_ring_dma;
+	dma_addr_t		tx_ring_dma;
 
 	struct macb_dma_desc	*dummy_desc;
-	unsigned long		dummy_desc_dma;
+	dma_addr_t		dummy_desc_dma;
 
 	const struct device	*dev;
 	unsigned int    	duplex;

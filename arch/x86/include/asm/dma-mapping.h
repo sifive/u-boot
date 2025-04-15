@@ -13,9 +13,9 @@
 #include <linux/types.h>
 #include <malloc.h>
 
-static inline void *dma_alloc_coherent(size_t len, unsigned long *handle)
+static inline void *dma_alloc_coherent(size_t len, dma_addr_t *handle)
 {
-	*handle = (unsigned long)memalign(ARCH_DMA_MINALIGN, len);
+	*handle = (dma_addr_t)memalign(ARCH_DMA_MINALIGN, len);
 	return (void *)*handle;
 }
 

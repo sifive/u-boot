@@ -501,7 +501,7 @@ static void meson_nfc_read_buf(struct mtd_info *mtd, u8 *buf, int size)
 	u32 cmd;
 
 	if ((uintptr_t)buf % DMA_ADDR_ALIGN) {
-		unsigned long tmp_addr;
+		dma_addr_t tmp_addr;
 
 		dma_buf = dma_alloc_coherent(size, &tmp_addr);
 		if (!dma_buf)
@@ -540,7 +540,7 @@ static void meson_nfc_write_buf(struct mtd_info *mtd, const u8 *buf, int size)
 	u32 cmd;
 
 	if ((uintptr_t)buf % DMA_ADDR_ALIGN) {
-		unsigned long tmp_addr;
+		dma_addr_t tmp_addr;
 
 		dma_buf = dma_alloc_coherent(size, &tmp_addr);
 		if (!dma_buf)
@@ -933,7 +933,7 @@ static int meson_chip_buffer_init(struct nand_chip *nand)
 	const struct mtd_info *mtd = nand_to_mtd(nand);
 	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
 	u32 page_bytes, info_bytes, nsectors;
-	unsigned long tmp_addr;
+	dma_addr_t tmp_addr;
 
 	nsectors = mtd->writesize / nand->ecc.size;
 

@@ -384,9 +384,8 @@ static int dwc3_alloc_trb_pool(struct dwc3_ep *dep)
 	if (dep->number == 0 || dep->number == 1)
 		return 0;
 
-	dep->trb_pool = dma_alloc_coherent(sizeof(struct dwc3_trb) *
-					   DWC3_TRB_NUM,
-					   (unsigned long *)&dep->trb_pool_dma);
+	dep->trb_pool = dma_alloc_coherent(sizeof(struct dwc3_trb) * DWC3_TRB_NUM,
+					   &dep->trb_pool_dma);
 	if (!dep->trb_pool) {
 		dev_err(dep->dwc->dev, "failed to allocate trb pool for %s\n",
 				dep->name);
@@ -2656,31 +2655,27 @@ int dwc3_gadget_init(struct dwc3 *dwc)
 {
 	int					ret;
 
-	dwc->ctrl_req = dma_alloc_coherent(sizeof(*dwc->ctrl_req),
-					(unsigned long *)&dwc->ctrl_req_addr);
+	dwc->ctrl_req = dma_alloc_coherent(sizeof(*dwc->ctrl_req), &dwc->ctrl_req_addr);
 	if (!dwc->ctrl_req) {
 		dev_err(dwc->dev, "failed to allocate ctrl request\n");
 		ret = -ENOMEM;
 		goto err0;
 	}
 
-	dwc->ep0_trb = dma_alloc_coherent(sizeof(*dwc->ep0_trb) * 2,
-					  (unsigned long *)&dwc->ep0_trb_addr);
+	dwc->ep0_trb = dma_alloc_coherent(sizeof(*dwc->ep0_trb) * 2, &dwc->ep0_trb_addr);
 	if (!dwc->ep0_trb) {
 		dev_err(dwc->dev, "failed to allocate ep0 trb\n");
 		ret = -ENOMEM;
 		goto err1;
 	}
 
-	dwc->setup_buf = dma_alloc_coherent(DWC3_EP0_BOUNCE_SIZE,
-					(unsigned long *)&dwc->setup_buf_addr);
+	dwc->setup_buf = dma_alloc_coherent(DWC3_EP0_BOUNCE_SIZE, &dwc->setup_buf_addr);
 	if (!dwc->setup_buf) {
 		ret = -ENOMEM;
 		goto err2;
 	}
 
-	dwc->ep0_bounce = dma_alloc_coherent(DWC3_EP0_BOUNCE_SIZE,
-					(unsigned long *)&dwc->ep0_bounce_addr);
+	dwc->ep0_bounce = dma_alloc_coherent(DWC3_EP0_BOUNCE_SIZE, &dwc->ep0_bounce_addr);
 	if (!dwc->ep0_bounce) {
 		dev_err(dwc->dev, "failed to allocate ep0 bounce buffer\n");
 		ret = -ENOMEM;

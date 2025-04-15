@@ -8,9 +8,9 @@
  * dma_alloc_coherent() return cache-line aligned allocation which is mapped
  * to uncached io region.
  */
-static inline void *dma_alloc_coherent(size_t len, unsigned long *handle)
+static inline void *dma_alloc_coherent(size_t len, dma_addr_t *handle)
 {
-	unsigned long addr = (unsigned long)malloc_cache_aligned(len);
+	dma_addr_t addr = (dma_addr_t)malloc_cache_aligned(len);
 
 	if (!addr)
 		return NULL;

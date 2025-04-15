@@ -14,10 +14,11 @@
 #define RNG_BUFFER_SIZE	128U
 
 struct turris_rwtm_rng_priv {
-	phys_addr_t buffer;
+	void *buffer;
+	dma_addr_t buffer_handle;
 };
 
-static int turris_rwtm_rng_fill_entropy(phys_addr_t entropy, size_t size)
+static int turris_rwtm_rng_fill_entropy(dma_addr_t entropy, size_t size)
 {
 	u32 args[3] = { 1, (u32)entropy, size };
 	int ret;
@@ -42,20 +43,17 @@ static int turris_rwtm_rng_fill_entropy(phys_addr_t entropy, size_t size)
 static int turris_rwtm_rng_random_read(struct udevice *dev, void *data, size_t count)
 {
 	struct turris_rwtm_rng_priv *priv = dev_get_priv(dev);
-	phys_addr_t phys;
 	size_t size;
 	int ret;
-
-	phys = priv->buffer;
 
 	while (count) {
 		size = min_t(size_t, RNG_BUFFER_SIZE, count);
 
-		ret = turris_rwtm_rng_fill_entropy(phys, size);
+		ret = turris_rwtm_rng_fill_entropy(priv->buffer_handle, size);
 		if (ret < 0)
 			return ret;
 
-		memcpy(data, (void *)phys, size);
+		memcpy(data, priv->buffer, size);
 		count -= size;
 		data = (u8 *)data + size;
 	}
@@ -77,11 +75,8 @@ static int turris_rwtm_rng_probe(struct udevice *dev)
 	if (ret < 0)
 		return ret;
 
-	/* entropy buffer */
-	priv->buffer = 0;
-
-	/* buffer address need to be aligned */
-	dma_alloc_coherent(RNG_BUFFER_SIZE, (unsigned long *)&priv->buffer);
+	/* entropy buffer address needs to be aligned */
+	priv->buffer = dma_alloc_coherent(RNG_BUFFER_SIZE, &priv->buffer_handle);
 	if (!priv->buffer)
 		return -ENOMEM;
 
@@ -91,9 +86,8 @@ static int turris_rwtm_rng_probe(struct udevice *dev)
 static int turris_rwtm_rng_remove(struct udevice *dev)
 {
 	struct turris_rwtm_rng_priv *priv = dev_get_priv(dev);
-	phys_addr_t phys = priv->buffer;
 
-	dma_free_coherent((void *)phys);
+	dma_free_coherent(priv->buffer);
 
 	return 0;
 }
