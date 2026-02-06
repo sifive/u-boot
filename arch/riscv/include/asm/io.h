@@ -382,6 +382,14 @@ static inline void writesl(volatile void __iomem *addr, const void *data,
 #define writeq_relaxed(v, c)	({ __io_rbw(); writeq_cpu((v), (c)); __io_raw(); })
 #endif
 
+#ifdef CONFIG_HAVE_MAP_NOCACHE
+#define MAP_NOCACHE 1
+void *map_physmem(phys_addr_t paddr, unsigned long len, unsigned long flags);
+#define map_physmem map_physmem
+void unmap_physmem(void *vaddr, unsigned long flags);
+#define unmap_physmem unmap_physmem
+#endif
+
 #include <asm-generic/io.h>
 
 #endif	/* __ASM_RISCV_IO_H */
