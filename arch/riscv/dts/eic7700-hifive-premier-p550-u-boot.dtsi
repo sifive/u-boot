@@ -1,8 +1,16 @@
 // SPDX-License-Identifier: (GPL-2.0 OR MIT)
 
 / {
+	chosen {
+		stdout-path = "serial0:1500000n8";
+	};
+
 	memory@80000000 {
 		reg = <0x0 0x80000000 0x4 0x00000000>;
 		device_type = "memory";
 	};
+};
+
+&uart0 {
+	current-speed = <1500000>;
 };

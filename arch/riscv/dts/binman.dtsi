@@ -32,10 +32,12 @@
 					type = "standalone";
 					os = "U-Boot";
 					arch = "riscv";
-					compression = "none";
+					compression = "gzip";
 					load = /bits/ 64 <CONFIG_TEXT_BASE>;
 
-					uboot_blob: u-boot-nodtb {
+					uboot_blob: blob-ext {
+						filename = "u-boot-nodtb.bin";
+						compress = "gzip";
 					};
 				};
 #else
@@ -44,11 +46,12 @@
 					type = "standalone";
 					os = "Linux";
 					arch = "riscv";
-					compression = "none";
+					compression = "gzip";
 					load = /bits/ 64 <CONFIG_TEXT_BASE>;
 
 					linux_blob: blob-ext {
 						filename = "Image";
+						compress = "gzip";
 					};
 				};
 #endif
@@ -71,13 +74,14 @@
 					type = "firmware";
 					os = "opensbi";
 					arch = "riscv";
-					compression = "none";
+					compression = "gzip";
 					load = /bits/ 64 <CONFIG_SPL_OPENSBI_LOAD_ADDR>;
 					entry = /bits/ 64 <CONFIG_SPL_OPENSBI_LOAD_ADDR>;
 
 					opensbi_blob: opensbi {
 						filename = "fw_dynamic.bin";
 						missing-msg = "opensbi";
+						compress = "gzip";
 					};
 				};
 
